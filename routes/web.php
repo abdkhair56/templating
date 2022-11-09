@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backoffice\Auth\LoginController;
+use App\Http\Controllers\Backoffice\Dashboard\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group([ 'prefix' => 'login', 'as' => 'login.' ], function () {
+    Route::get('backoffice', [LoginController::class, 'index'])->name('index');
+    Route::post('backoffice-login', [LoginController::class, 'execute'])->name('execute');
+});
+
+Route::group(['middleware' => 'auth'], function(){
+    Route::group([ 'prefix' => 'logout', 'as' => 'logout.' ], function () {
+        Route::get('', [LoginController::class, 'logout'])->name('index');
+    });
+    Route::group([ 'prefix' => 'dashboard', 'as' => 'dashboard'], function () {
+        Route::get('', [DashboardController::class, 'index'])->name('index');
+    });
 });
